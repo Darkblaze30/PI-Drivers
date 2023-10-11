@@ -1,0 +1,34 @@
+const getRouter = (req, res) => {
+  res.status(200).send("hola");
+};
+
+const getDrivers = (req, res) => {
+  const { name } = req.query;
+
+  if (name) {
+    res.send(`quiero mostrar el driver con nombre ${name}`);
+  } else {
+    res
+      .status(200)
+      .send("aqui quiero mostrar un arreglo con la informacion de cada driver");
+  }
+};
+
+const getTeams = (req, res) => {
+  res
+    .status(200)
+    .send("aqui quiero mostrar un arreglo con todos los teams existentes");
+};
+
+const getDriverById = (req,res) => {
+    const {id} = req.params
+
+    res.status(200).send(`quiero mostrar el driver con id ${id}`)
+}
+
+module.exports = {
+  getRouter,
+  getDrivers,
+  getTeams,
+  getDriverById
+};
