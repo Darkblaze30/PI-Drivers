@@ -3,8 +3,9 @@ const { DataTypes } = require("sequelize")
 module.exports = (sequelize) => {
     sequelize.define('Teams',{
         id:{
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             primaryKey: true,
+            autoIncrement: true
         },
         name:{
             type :DataTypes.STRING,

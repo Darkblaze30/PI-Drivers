@@ -1,7 +1,17 @@
-const postDrivers = (req, res) => {
-    const {name, lastName} = req.body
-    res.send(`quiero crear un driver con el nombre ${name} y apellido ${lastName}`)
-}
+const { driverCreate } = require("../controllers/driversController")
+const { Drivers, Teams} = require("../db");
+
+
+const postDrivers = async (req, res) => {
+ // const {name, Description, Plataform,img,releaseDate,rating} = req.body
+ try{
+    const{name, lastName, description, img, nationality, birthdate, teams}= req.body;
+    const newVideogame = await driverCreate(name,lastName, description, img, nationality, birthdate, teams)
+    res.send(newVideogame);
+} catch (error) {
+    res.status(400).send("error:" + error.message)     
+}}
+
 
 module.exports = {
     postDrivers,
