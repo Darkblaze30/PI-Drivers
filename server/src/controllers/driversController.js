@@ -5,19 +5,39 @@ const Sequelize = require("sequelize");
 
 const allDrivers = async () => {
   const infoApi = (await axios.get("http://localhost:5000/drivers")).data;
-  const driversBdd = await Drivers.findAll();
+  const driversBdd = await Drivers.findAll({
+    include: [
+      {
+        model: Teams,
+        attributes: ["name"],
+        through: {
+          attributes: [] // Puedes especificar qué atributos mostrar aquí si es necesario
+        }
+      }
+    ]
+  });
   const driversApi = infoAllCleaner(infoApi);
   return [...driversBdd, ...driversApi];
 };
 
 const driversByName = async (name) => {
   const infoApi = (
-    await axios.get(`http://localhost:5000/drivers?name.forename=${name}`)
+    await axios.get(`http://localhost:5000/drivers`)
   ).data;
   const driver = infoAllCleaner(infoApi);
-  const driverBdd = await Drivers.findAll({ where: { name: name } });
+  const driverBdd = await Drivers.findAll({include: [
+    {
+      model: Teams,
+      attributes: ["name"],
+      through: {
+        attributes: [] // Puedes especificar qué atributos mostrar aquí si es necesario
+      }
+    }
+  ]});
   const response = [...driverBdd, ...driver];
-  return response;
+  const responsefilter = response.filter((driver) => driver.name.toLowerCase().includes(name.toLowerCase()) )
+  if(!responsefilter.length) throw Error(`no se encontro ningun driver con este nombre`)
+  return responsefilter;
 };
 
 const driversById = async (id, source) => {
@@ -27,7 +47,17 @@ const driversById = async (id, source) => {
     const driver = infoCleaner(infoApi);
     return driver;
   } else {
-    const infoBdd = await Drivers.findByPk(id);
+    const infoBdd = await Drivers.findByPk(id, {
+      include: [
+        {
+          model: Teams,
+          attributes: ["name"],
+          through: {
+            attributes: [] // Puedes especificar qué atributos mostrar aquí si es necesario
+          }
+        }
+      ]
+    });
     if (!infoBdd) throw Error(`not exist a driver with is id`);
     return infoBdd;
   }
@@ -45,7 +75,7 @@ const driverCreate = async (name, lastName, description, img, nationality, birth
       include: [
         {
           model: Teams,
-          as: 'Teams', // Asegúrate de usar el alias correcto si lo has definido
+          attributes: ["name"],
           through: {
             attributes: [] // Puedes especificar qué atributos mostrar aquí si es necesario
           }

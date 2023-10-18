@@ -1,3 +1,13 @@
+const teamsStringToArray = (teams) => {
+    if (teams) {
+      return teams.split(', ').map(team => {
+        return { name: team };
+      });
+    } else {
+      return [];
+    }
+  };
+
 const infoAllCleaner = (drivers) => {
     return drivers.map(driver => {
         return info = {
@@ -8,7 +18,7 @@ const infoAllCleaner = (drivers) => {
             img: driver.image.url,
             nationality: driver.nationality,
             birthdate: driver.dob,
-            Teams: driver.teams,
+            Teams: teamsStringToArray(driver.teams),
         }
     })
 }
@@ -21,7 +31,9 @@ const infoCleaner = (driver) => {
     description: driver.description,
     img: driver.image.url,
     nationality: driver.nationality,
-    birthdate: driver.dob
+    birthdate: driver.dob,
+    Teams: teamsStringToArray(driver.teams),
+
    }
 }
 
